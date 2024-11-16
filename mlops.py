@@ -1,6 +1,5 @@
 import mlflow
 import torch
-
 from torch import nn
 from torch.utils.data import DataLoader
 from torchinfo import summary
@@ -22,7 +21,6 @@ train_dataloader = DataLoader(training_data, batch_size=64)
 # Get cpu or gpu for training.
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-
 # Define the model.
 class NeuralNetwork(nn.Module):
     def __init__(self):
@@ -41,21 +39,19 @@ class NeuralNetwork(nn.Module):
         logits = self.linear_relu_stack(x)
         return logits
 
-
 def train(dataloader, model, loss_fn, metrics_fn, optimizer):
     model.train()
     for batch, (X, y) in enumerate(dataloader):
         X, y = X.to(device), y.to(device)
-
         pred = model(X)
         loss = loss_fn(pred, y)
         accuracy = metrics_fn(pred, y)
-
+        
         # Backpropagation.
         loss.backward()
         optimizer.step()
         optimizer.zero_grad()
-
+        
         if batch % 100 == 0:
             loss, current = loss.item(), batch
             mlflow.log_metric("loss", f"{loss:3f}", step=(batch // 100))
@@ -64,14 +60,17 @@ def train(dataloader, model, loss_fn, metrics_fn, optimizer):
                 f"loss: {loss:3f} accuracy: {accuracy:3f} [{current} / {len(dataloader)}]"
             )
 
-
 epochs = 3
 loss_fn = nn.CrossEntropyLoss()
 metric_fn = Accuracy(task="multiclass", num_classes=10).to(device)
 model = NeuralNetwork().to(device)
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
-with mlflow.start_run():
+# Start the MLflow run and capture the run ID
+with mlflow.start_run() as run:
+    run_id = run.info.run_id
+    print(f"MLflow Run ID: {run_id}")
+    
     params = {
         "epochs": epochs,
         "learning_rate": 1e-3,
@@ -80,20 +79,27 @@ with mlflow.start_run():
         "metric_function": metric_fn.__class__.__name__,
         "optimizer": "SGD",
     }
+    
     # Log training parameters.
     mlflow.log_params(params)
-
+    
     # Log model summary.
     with open("model_summary.txt", "w") as f:
         f.write(str(summary(model)))
     mlflow.log_artifact("model_summary.txt")
-
+    
     for t in range(epochs):
         print(f"Epoch {t+1}\n-------------------------------")
         train(train_dataloader, model, loss_fn, metric_fn, optimizer)
-
+    
     # Save the trained model to MLflow.
     mlflow.pytorch.log_model(model, "model")
+    
+    # Save run ID to a file for later use
+    with open("last_run_id.txt", "w") as f:
+        f.write(run_id)
+
+print(f"Training complete. Run ID: {run_id}")
 
 
 

@@ -1,0 +1,15 @@
+artifact_uri: file:///home/melaichouni/Desktop/Mango-Datathon-UPC-2024/mlruns/0/b691110f9e8142b38993b3c4bb12a38e/artifacts
+end_time: 1731780890014
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: b691110f9e8142b38993b3c4bb12a38e
+run_name: caring-donkey-408
+run_uuid: b691110f9e8142b38993b3c4bb12a38e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1731780782821
+status: 3
+tags: []
+user_id: melaichouni
