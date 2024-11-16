@@ -1,0 +1,46 @@
+{
+    "cane_height_type": [
+        0,
+        5
+    ],
+    "closure_placement": [
+        6,
+        11
+    ],
+    "heel_shape_type": [
+        12,
+        22
+    ],
+    "knit_structure": [
+        23,
+        30
+    ],
+    "length_type": [
+        31,
+        42
+    ],
+    "neck_lapel_type": [
+        43,
+        75
+    ],
+    "silhouette_type": [
+        76,
+        108
+    ],
+    "sleeve_length_type": [
+        109,
+        114
+    ],
+    "toecap_type": [
+        115,
+        118
+    ],
+    "waist_type": [
+        119,
+        122
+    ],
+    "woven_structure": [
+        123,
+        126
+    ]
+}
